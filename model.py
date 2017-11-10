@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from json import dumps
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -51,6 +52,28 @@ class Chart(db.Model):
         return repr_str.format(id=self.chart_id, users=users)
 
 
+    def get_stars(self):
+        """Returns a dictionary, keyed by receiver_id, of all chart's stars"""
+
+        stars_by_receiver = {}
+
+        #for each user associated with this chart, get all stars on this chart
+        #which have been received by that user
+        for user in self.users:
+            stars = Star.query.filter(Star.chart_id == self.chart_id,
+                                      Star.receiver_id == user.user_id).all()
+            stars_by_receiver[user.user_id] = stars
+
+        return stars_by_receiver
+
+        # dict comprehension version, just for fun
+        # return {user.user_id:
+        #         Star.query.filter(Star.chart_id == self.chart_id,
+        #                           Star.receiver_id == user.user_id).all()
+        #         for user in self.users}
+
+
+
 class UserChart(db.Model):
     """An association table connecting charts to users"""
 
@@ -71,14 +94,17 @@ class Star(db.Model):
     __tablename__ = "stars"
 
     star_id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    chart_id = db.Column(db.Integer,
+                         db.ForeignKey("charts.chart_id"),
+                         nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
     giver_id = db.Column(db.Integer,
                          db.ForeignKey("users.user_id"),
                          nullable=False)
     receiver_id = db.Column(db.Integer,
                             db.ForeignKey("users.user_id"),
                             nullable=False)
-    color = db.Column(db.String(32), nullable=False)
+    color = db.Column(db.String(32), nullable=False, default="gold")
     reason = db.Column(db.Text, nullable=False)
     note = db.Column(db.Text, nullable=True)
 
@@ -111,10 +137,10 @@ class Frienships(db.Model):
 ##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri="postgresql:///starchart"):
     """Connect the database to the Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///starchart'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
