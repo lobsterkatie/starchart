@@ -24,7 +24,7 @@ connect_to_db(app)
 def show_homepage():
     """Show the landing page"""
 
-    return render_template("home.html")
+    return render_template("index.html")
 
 
 @app.route("/register.json", methods=["POST"])

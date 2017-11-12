@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %} StarChart {% endblock %}
+
+
+{% block page_specific_js %}
+
+{% endblock %}
+
+
+{% block body %}
+    <div id="registration-form-div">
+        <h3>Register</h3>
+        <form id="registration-form">
+            First Name <input id="firstname" type="text" name="firstname"> <br>
+            Last Name <input id="lastname" type="text" name="lastname"> <br>
+            Email <input id="email" type="email" name="email"> <br>
+            Password <input id="password" type="password" name="password"> <br>
+            Password again: <input id="password-again" type="password"> <br>
+            <input type="submit" value="Register">
+        </form>
+    </div>
+
+    <br> <br> <br>
+
+    <div id="login-form-div">
+        <h3>Log In</h3>
+        <form id="login-form">
+            Email <input type="email" name="email"> <br>
+            Password <input type="password" name="password"> <br>
+            <input type="submit" value="Log In">
+        </form>
+    </div>
+
+
+{% endblock %}
+
