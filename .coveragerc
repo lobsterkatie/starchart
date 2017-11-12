@@ -12,7 +12,7 @@ exclude_lines =
     pragma: no cover
 
     # Don't complain about missing debug-only code:
-    def __repr__
+    # def __repr__
     if self\.debug
 
     # Don't complain if tests don't hit defensive assertion code:
@@ -24,6 +24,8 @@ exclude_lines =
     if __name__ == .__main__.:
 
 ignore_errors = True
+
+#ask the report to show which lines were missed
 show_missing = True
 
 [html]
